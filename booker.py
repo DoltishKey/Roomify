@@ -2,9 +2,11 @@
 import requests
 #from bs4 import BeautifulSoup
 
+
+
 data = {
-    'username': 'AC8240',
-    'password': '92F39gb2'
+    'username': raw_input('Username:'),
+    'password': raw_input('Password:')
 }
 
 head = {"User-Agent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36"}
