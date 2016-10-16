@@ -12,11 +12,31 @@
         </form>
 
 
+
+            <video id=foo autoplay></video>
         <script>
             $(document).ready(function() {
                 //send_wit_message()
                 send_wit_audio()
             });
+
+//Testar med Video
+            var video = document.querySelector("#foo");
+            navigator.getUserMedia = navigator.getUserMedia || navigator.webkitgetUserMedia || navigator.mozgetUserMedia
+            || navigator.msgetUserMedia || navigator.ogetUserMedia;
+
+            if(navigator.getUserMedia){
+                navigator.getUserMedia({video:true}, handleVideo, videoError);
+            }
+
+            function handleVideo(stream){
+                video.src = window.URL.createObjectURL(stream);
+            }
+
+            function videoError(e){
+                    console.log("funkar ej");
+            }
+//Test med Video avslutat
 
 
             function send_wit_message(){
@@ -41,7 +61,7 @@
                     console.log("Kommer hit");
                     e.preventDefault();
                     input = document.getElementById('audio');
-                    audio_file = 
+                    audio_file =
 
                     console.log(input)
 
