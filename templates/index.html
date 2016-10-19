@@ -8,16 +8,15 @@
         <script src="{{ url_for('static', filename='recorder.js') }}"></script>
     </head>
     <body>
-        <h1>Hello {{name}}!</h1>
-        <div>
-            <form action="" method="post" id="new_form">
-                <label for="new_name">Namn</label>
-                <input type="text" name="new_name"  id="new_name">
+        <h1>Roomify</h1>
+        <div id="text_container">
+            <form action="" method="post" id="new_text_request">
+                <label for="new_name">Vad vill du göra?</label>
+                <input type="text" name="text_request"  id="text_request">
                 <input type="submit">
             </form>
-            <p id="name_p"></p>
         </div>
-        <div>
+        <div id="recorder_div">
             <h2>Recorder</h2>
             <button onclick="startRecording(this);">record</button>
             <button onclick="stopRecording(this);" disabled>stop</button>
@@ -26,25 +25,27 @@
             <ul id="recordingslist"></ul>
 
             <h2>Log</h2>
-            <pre id="log"></pre>
         </div>
+        <pre id="log"></pre>
 
         <script>
             $(document).ready(function() {
                 send_data()
             });
 
+
+
             function send_data(){
-                $("#new_form").submit(function(e){
+                $("#new_text_request").submit(function(e){
                     e.preventDefault();
-                    input = $('#new_name').val()
+                    input = $('#text_request').val()
                     console.log(input);
                     $.ajax({
-                        url: '/data_sender',
+                        url: '/new_text_request',
                         method: 'POST',
                         data:$(this).serialize(),
                         success: function(response) {
-                            $('#name_p').html(response);
+                            __log(response);
                         }
                     });
 
@@ -108,17 +109,9 @@
                 reader.onloadend = function() {
                     base64data = reader.result;
 
-
-
                     var encodedData = window.btoa(base64data);
-                    __log(encodedData)
-                    __log(base64data)
-                    __log(url)
-                    //var formData = new FormData();
-                    //formData.append('audio/wav', encodedData, 'new_sound');
-
                     $.ajax({
-                        url: '/data_sender',
+                        url: '/new_speech_request',
                         method: 'POST',
                         data:{'sound':encodedData},
                         success: function(response) {
@@ -151,17 +144,28 @@
                 audio_context = new AudioContext;
                 __log('Audio context set up.');
                 __log('navigator.getUserMedia ' + (navigator.getUserMedia ? 'available.' : 'not present!'));
+                if (navigator.getUserMedia){
+                    $('#recorder_div').show()
+                    $('#text_container').hide()
+                }
+                else{
+                    fallback()
+                }
               } catch (e) {
-                alert('No web audio support in this browser!');
+                fallback()
               }
 
-              navigator.getUserMedia({audio: true}, startUserMedia, function(e) {
-                __log('No live audio input: ' + e);
-              });
+              if (navigator.getUserMedia){
+                  navigator.getUserMedia({audio: true}, startUserMedia, function(e) {
+                      fallback()
+                  });
+                }
             };
 
-
-
+            function fallback(){
+                $('#recorder_div').hide();
+                $('#text_container').show();
+            }
         </script>
     </body>
 </html>

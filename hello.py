@@ -9,10 +9,10 @@ app = Flask(__name__)
 
 @app.route('/')
 def welcome():
-	return render_template('index.html', name="Jacob")
+	return render_template('index.html')
 
 
-@app.route('/data_sender', methods=['POST'])
+@app.route('/new_speech_request', methods=['POST'])
 def handle_data():
 	in_data = request.form
 
@@ -28,14 +28,27 @@ def handle_data():
 	encoded_string = sound
 	header ={
 		'Authorization' : 'Bearer 2G6XUDBNKEWLFPJDLKEMTHEIHOSZG7HA',
-		#'Content-Type': 'audio/mpeg3',
 		'Content-Type': 'audio/wav'
-
 	}
 
 	r = requests.post(url, data=encoded_string, headers=header)
 	print r.content
 	return r.content
+
+
+@app.route('/new_text_request', methods=['POST'])
+def send_text():
+	in_data = request.form
+	to_do = in_data['text_request']
+	print to_do
+	url = 'https://api.wit.ai/message'
+	data = {
+		'access_token' : '2G6XUDBNKEWLFPJDLKEMTHEIHOSZG7HA',
+		'q': to_do
+	}
+	r = requests.get(url, params = data)
+	return r.content
+
 
 
 if __name__ == '__main__':
