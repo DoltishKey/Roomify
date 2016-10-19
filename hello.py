@@ -4,7 +4,13 @@ from flask import Flask, request, session, g, redirect, url_for, abort, render_t
 import requests
 import base64
 import wave
+from modules import core
+from modules import witty
+import json
+import time
+from datetime import datetime, timedelta
 
+#from modules import booker
 app = Flask(__name__)
 
 @app.route('/')
@@ -16,24 +22,51 @@ def welcome():
 def handle_data():
 	in_data = request.form
 
-
-	url = 'https://api.wit.ai/speech'
 	file_in = base64.b64decode(in_data['sound'])
 	file_data = file_in.split(',', 1 )
-	file_dec = base64.b64decode(file_data[1])
-	filename = 'new_sound.wav'
-	with open(filename, 'wb') as f:
-		f.write(file_dec)
-	sound = open(filename, "rb")
-	encoded_string = sound
-	header ={
-		'Authorization' : 'Bearer 2G6XUDBNKEWLFPJDLKEMTHEIHOSZG7HA',
-		'Content-Type': 'audio/wav'
-	}
+	response = witty.post_speech(file_data)
+	return_response=[
+		{'errors':response['errors']}
+	]
 
-	r = requests.post(url, data=encoded_string, headers=header)
-	print r.content
-	return r.content
+	time = True
+	location = True
+
+	if 'time' in response['errors']:
+		time = False
+
+	if 'location' in response['errors']:
+		location = False
+	else:
+		return_response.append(response['data']['entities']['location'][0]['value'])
+
+
+	if time == True:
+		today = datetime.now()
+		requested_time = str(response['data']['entities']['datetime'][0]['value'])
+		timi = requested_time.split('.', 1 )
+		req_time = datetime.strptime(timi[0], '%Y-%m-%dT%H:%M:%S')
+		time_update = req_time + timedelta(hours=9)
+
+		if today.date() == time_update.date():
+			next_step = "Booker"
+		else:
+			date = req_time.date()
+			next_step = "Core"
+
+		book_time = witty.time_master(req_time)
+
+		time_respone = {
+			'date':date,
+			'primary_slot':book_time['prime_slot'],
+			'sec_slot':book_time['sec_slot']
+		}
+
+		return_response.append(time_respone)
+
+		print return_response
+
+	return response['data']['_text']
 
 
 @app.route('/new_text_request', methods=['POST'])
