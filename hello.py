@@ -56,18 +56,21 @@ def handle_data():
 
 		book_time = witty.time_master(req_time)
 
-		time_respone = {
-			'date':date,
-			'primary_slot':book_time['prime_slot'],
-			'sec_slot':book_time['sec_slot']
-		}
+	else:
+		today = datetime.now()
+		date = today.date()
+		book_time = witty.time_master(today)
 
 
-		return_response.append(time_respone)
+	time_respone = {
+		'date':date,
+		'primary_slot':book_time['prime_slot'],
+		'sec_slot':book_time['sec_slot']
+	}
+	return_response.append(time_respone)
 
-		print return_response
 
-	return response['data']['_text']
+	return json.dumps(return_response)
 
 
 @app.route('/new_text_request', methods=['POST'])

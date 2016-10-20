@@ -3,7 +3,7 @@ body{
     text-align: center;
 }
 
-h1,h2,h3,h4,h5,h6,p,a{
+h1,h2,h3,h4,h5,h6,p,a, button{
     color: #8A8787;
     font-family: 'Raleway', sans-serif;
     font-weight: 100;
@@ -37,4 +37,24 @@ h1,h2,h3,h4,h5,h6,p,a{
     background-color: #ED3A3D;
     cursor: pointer;
     transition: 0.5s;
+}
+
+button{
+    width: 200px;
+    background: none;
+    cursor: pointer;
+    font-size: 16px;
+    border: 1px solid #8A8787;
+    margin: 0px;
+    padding: 20px 0px;
+}
+
+button.blue{
+    background-color: #2345AA;
+    color: #fff;
+}
+
+button.red{
+    background-color: #FF4A5E;
+    color: #fff;
 }
