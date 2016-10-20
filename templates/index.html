@@ -32,7 +32,43 @@
 
             <h2>Log</h2>
         </div>
+
+        <div id="confirm_booking">
+            <h3> We will book a room for you</h3>
+
+            <div id="date">
+                <p></p>
+            </div>
+
+            <div id="time">
+                <p></p>
+            </div>
+
+            <div id="location">
+                <p></p>
+            </div>
+
+        <div id="confirm_button"></div>
+
+        </div>
         <pre id="log"></pre>
+        <script>
+            function confirm_booking(){
+                $('#confirm_button').click(function(){
+                    var value = $(this).text();
+                     var location = $('#location').find('p').text();
+                     var time = $('#time').find('p').text();
+                     var date = $('#date').find('p').text();
+
+                    $.ajax({
+                        url: '/grouprooms',
+                        method: 'POST',
+                        data:{'sound':encodedData},
+                        dataType: "json"
+                    });
+                });
+            }
+        </script>
 
         <script>
             $(document).ready(function() {
@@ -119,8 +155,39 @@
                         url: '/new_speech_request',
                         method: 'POST',
                         data:{'sound':encodedData},
+                        dataType: "json",
                         success: function(response) {
-                            __log(response)
+                            // Location, date och time skrivs ut + tillhörande knapper
+                            if(response[0]['errors'].indexOf('location')> -1){
+                                $('#location').find('p').text('where?')
+                                $('#location').append("<button class='location'>Niagara</button>")
+                                $('#location').append("<button class='location'>Orkanen</button>")
+                                }
+                                $('#date').find('p').text(response[1]['date'])
+                                var timeslots =
+                                    ['08:15-10:00',
+                                    '10:15-13:00',
+                                    '13:15-15:00',
+                                    '15:15-17:00',
+                                    '17:15-20:00']
+                                var prime = timeslots[response[1]['primary_slot']]
+                                $('#time').find('p').text(prime)
+
+                                if(response[1]['sec_slot'] != null){
+                                    var secondary = timeslots[response[1]['sec_slot']]
+                                    $('#time').append("<button class='time'>"+ prime +"</button>")
+                                    $('#time').append("<button class='time'>"+ secondary +"</button>")
+                                    }
+
+                                $('.location').click(function(){
+                                    var value = $(this).text();
+                                    $('#location').find('p').text(value);
+                                    });
+                                $('.time').click(function(){
+                                    var value = $(this).text();
+                                    $('#time').find('p').text(value);
+                                    });
+                                confirm_booking()
                         }
                     });
                 }
