@@ -63,7 +63,7 @@ def handle_data():
 
 
 	time_respone = {
-		'date':date,
+		'date':str(date),
 		'primary_slot':book_time['prime_slot'],
 		'sec_slot':book_time['sec_slot']
 	}

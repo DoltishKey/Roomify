@@ -139,29 +139,28 @@
             }
 
             function createDownloadLink() {
-              recorder && recorder.exportWAV(function(blob) {
-                var url = URL.createObjectURL(blob);
-                var li = document.createElement('li');
-                var au = document.createElement('audio');
-                var hf = document.createElement('a');
+                recorder && recorder.exportWAV(function(blob) {
+                    var url = URL.createObjectURL(blob);
+                    var li = document.createElement('li');
+                    var au = document.createElement('audio');
+                    var hf = document.createElement('a');
 
-                var reader = new FileReader();
-                reader.readAsDataURL(blob);
-                reader.onloadend = function() {
-                    base64data = reader.result;
-
-                    var encodedData = window.btoa(base64data);
-                    $.ajax({
-                        url: '/new_speech_request',
-                        method: 'POST',
-                        data:{'sound':encodedData},
-                        dataType: "json",
-                        success: function(response) {
-                            // Location, date och time skrivs ut + tillhörande knapper
-                            if(response[0]['errors'].indexOf('location')> -1){
-                                $('#location').find('p').text('where?')
-                                $('#location').append("<button class='location'>Niagara</button>")
-                                $('#location').append("<button class='location'>Orkanen</button>")
+                    var reader = new FileReader();
+                    reader.readAsDataURL(blob);
+                    reader.onloadend = function() {
+                        base64data = reader.result;
+                        var encodedData = window.btoa(base64data);
+                        $.ajax({
+                            url: '/new_speech_request',
+                            method: 'POST',
+                            data:{'sound':encodedData},
+                            dataType: "json",
+                            success: function(response) {
+                                // Location, date och time skrivs ut + tillhörande knapper
+                                if(response[0]['errors'].indexOf('location')> -1){
+                                    $('#location').find('p').text('where?')
+                                    $('#location').append("<button class='location'>Niagara</button>")
+                                    $('#location').append("<button class='location'>Orkanen</button>")
                                 }
                                 $('#date').find('p').text(response[1]['date'])
                                 var timeslots =
@@ -177,20 +176,19 @@
                                     var secondary = timeslots[response[1]['sec_slot']]
                                     $('#time').append("<button class='time'>"+ prime +"</button>")
                                     $('#time').append("<button class='time'>"+ secondary +"</button>")
-                                    }
-
+                                }
                                 $('.location').click(function(){
                                     var value = $(this).text();
                                     $('#location').find('p').text(value);
-                                    });
+                                });
                                 $('.time').click(function(){
                                     var value = $(this).text();
                                     $('#time').find('p').text(value);
-                                    });
+                                });
                                 confirm_booking()
-                        }
-                    });
-                }
+                            }
+                        });
+                    }
 
                 au.controls = true;
                 au.src = url;
