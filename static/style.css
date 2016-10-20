@@ -1,3 +1,40 @@
-h1{
-    color: red;
+body{
+    background-color: #F1F2F6;
+    text-align: center;
+}
+
+h1,h2,h3,h4,h5,h6,p,a{
+    color: #8A8787;
+    font-family: 'Raleway', sans-serif;
+    font-weight: 100;
+}
+
+
+#recorder, #recorder > div{
+    background-color: #FF4A5E;
+    margin: 0 auto;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    border-radius: 50%;
+}
+
+#recorder{
+    height: 100px;
+    width: 100px;
+    transition: 0.8s;
+}
+
+#recorder > div{
+    display: inline-block;
+    margin: 5px auto;
+    height: 80px;
+    width: 80px;
+    border: 5px solid #F2F0F6;
+    transition: 0.5s;
+}
+
+#recorder:hover, #recorder > div:hover{
+    background-color: #ED3A3D;
+    cursor: pointer;
+    transition: 0.5s;
 }

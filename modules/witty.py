@@ -20,6 +20,7 @@ def post_speech(file_data):
 
     r = requests.post(url, data=sound, headers=header)
     sound.close()
+    print r.content
     data = json.loads(r.content)
     error_list = content_parser(data)
     return {'errors':error_list, 'data':data}

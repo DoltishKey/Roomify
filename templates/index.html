@@ -4,11 +4,14 @@
         <title>Roomify | Start</title>
         <meta charset="UTF-8">
         <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Raleway:100" rel="stylesheet">
         <script src="{{ url_for('static', filename='jquery.js') }}"></script>
         <script src="{{ url_for('static', filename='recorder.js') }}"></script>
     </head>
     <body>
         <h1>Roomify</h1>
+        <h2>Book grouprooms by speech</h2>
         <div id="text_container">
             <form action="" method="post" id="new_text_request">
                 <label for="new_name">Vad vill du göra?</label>
@@ -17,7 +20,10 @@
             </form>
         </div>
         <div id="recorder_div">
-            <h2>Recorder</h2>
+            <h4>Tap to capture booking</h4>
+            <div id="recorder">
+                <div></div>
+            </div>
             <button onclick="startRecording(this);">record</button>
             <button onclick="stopRecording(this);" disabled>stop</button>
 

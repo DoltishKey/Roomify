@@ -62,6 +62,7 @@ def handle_data():
 			'sec_slot':book_time['sec_slot']
 		}
 
+
 		return_response.append(time_respone)
 
 		print return_response
