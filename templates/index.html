@@ -48,23 +48,24 @@
                 <p></p>
             </div>
 
-        <div id="confirm_button"></div>
+        <div id="confirm_button">Okey, do it!</div>
 
         </div>
         <pre id="log"></pre>
         <script>
             function confirm_booking(){
                 $('#confirm_button').click(function(){
-                    var value = $(this).text();
                      var location = $('#location').find('p').text();
                      var time = $('#time').find('p').text();
                      var date = $('#date').find('p').text();
-
                     $.ajax({
                         url: '/grouprooms',
                         method: 'POST',
-                        data:{'sound':encodedData},
-                        dataType: "json"
+                        data:{
+                            'location':location,
+                            'time':time,
+                            'date':date,
+                        }
                     });
                 });
             }
@@ -74,8 +75,6 @@
             $(document).ready(function() {
                 send_data()
             });
-
-
 
             function send_data(){
                 $("#new_text_request").submit(function(e){
@@ -159,8 +158,8 @@
                                 // Location, date och time skrivs ut + tillhörande knapper
                                 if(response[0]['errors'].indexOf('location')> -1){
                                     $('#location').find('p').text('where?')
-                                    $('#location').append("<button class='location'>Niagara</button>")
-                                    $('#location').append("<button class='location'>Orkanen</button>")
+                                    $('#location').append("<button class='location'>in Niagara</button>")
+                                    $('#location').append("<button class='location'>in Orkanen</button>")
                                 }
                                 $('#date').find('p').text(response[1]['date'])
                                 var timeslots =

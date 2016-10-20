@@ -9,6 +9,7 @@ from modules import witty
 import json
 import time
 from datetime import datetime, timedelta
+from modules import booker
 
 #from modules import booker
 app = Flask(__name__)
@@ -50,6 +51,7 @@ def handle_data():
 
 		if today.date() == time_update.date():
 			next_step = "Booker"
+			date = today.date()
 		else:
 			date = req_time.date()
 			next_step = "Core"
@@ -68,10 +70,17 @@ def handle_data():
 		'sec_slot':book_time['sec_slot']
 	}
 	return_response.append(time_respone)
-
-
 	return json.dumps(return_response)
 
+@app.route('/grouprooms', methods=['POST'])
+def grouprooms():
+	in_data = request.form
+	time = in_data['time']
+	location = in_data['location']
+	date = in_data['date']
+
+	booker.test_booking(in_data)
+	return "key"
 
 @app.route('/new_text_request', methods=['POST'])
 def send_text():
