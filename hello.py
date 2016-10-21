@@ -35,32 +35,28 @@ def handle_data():
 	if 'time' in response['errors']:
 		time = False
 
-	if 'location' in response['errors']:
-		location = False
-	else:
-		return_response.append(response['data']['entities']['location'][0]['value'])
-
-
 	if time == True:
 		today = datetime.now()
 		requested_time = str(response['data']['entities']['datetime'][0]['value'])
 		timi = requested_time.split('.', 1 )
 		req_time = datetime.strptime(timi[0], '%Y-%m-%dT%H:%M:%S')
 		time_update = req_time + timedelta(hours=9)
+		book_time = witty.time_master(req_time)
 
 		if today.date() == time_update.date():
 			next_step = "Booker"
+			date = today.date()
+			time_now=int(str(date.strftime("%H")) + str(date.strftime("%M")))
+			if time_now > book_time['time_slot_end']:
+				date = date + timedelta(days=1)
 		else:
 			date = req_time.date()
 			next_step = "Core"
-
-		book_time = witty.time_master(req_time)
 
 	else:
 		today = datetime.now()
 		date = today.date()
 		book_time = witty.time_master(today)
-
 
 	time_respone = {
 		'date':str(date),
@@ -68,6 +64,11 @@ def handle_data():
 		'sec_slot':book_time['sec_slot']
 	}
 	return_response.append(time_respone)
+
+	if 'location' in response['errors']:
+		location = False
+	else:
+		return_response[1]['location'] = response['data']['entities']['location'][0]['value']
 
 
 	return json.dumps(return_response)

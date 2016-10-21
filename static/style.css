@@ -9,6 +9,35 @@ h1,h2,h3,h4,h5,h6,p,a, button{
     font-weight: 100;
 }
 
+h3{
+    margin-top: 110px;
+    font-size:2.5em;
+}
+
+
+
+@-webkit-keyframes BLINKER-ANIMATION {
+    0%   {background-color: #FF4A5E;}
+    50%  {background-color: #ED3A3D;}
+    100% {background-color: #FF4A5E;}
+}
+@-moz-keyframes BLINKER-ANIMATION {
+    0%   {background-color: #FF4A5E;}
+    50%  {background-color: #ED3A3D;}
+    100% {background-color: #FF4A5E;}
+}
+@-o-keyframes BLINKER-ANIMATION {
+    0%   {background-color: #FF4A5E;}
+    50%  {background-color: #ED3A3D;}
+    100% {background-color: #FF4A5E;}
+}
+@keyframes BLINKER-ANIMATION {
+    0%   {background-color: #FF4A5E;}
+    50%  {background-color: #ED3A3D;}
+    100% {background-color: #FF4A5E;}
+}
+
+
 
 #recorder, #recorder > div{
     background-color: #FF4A5E;
@@ -16,37 +45,67 @@ h1,h2,h3,h4,h5,h6,p,a, button{
     -webkit-border-radius: 50%;
     -moz-border-radius: 50%;
     border-radius: 50%;
+    -webkit-animation: BLINKER-ANIMATION 3.5s infinite; /* Safari 4+ */
+    -moz-animation:    BLINKER-ANIMATION 3.5s infinite; /* Fx 5+ */
+    -o-animation:      BLINKER-ANIMATION 3.5s infinite; /* Opera 12+ */
+    animation:         BLINKER-ANIMATION 3.5s infinite;
 }
 
 #recorder{
-    height: 100px;
-    width: 100px;
+    height: 120px;
+    width: 120px;
     transition: 0.8s;
 }
 
 #recorder > div{
     display: inline-block;
     margin: 5px auto;
-    height: 80px;
-    width: 80px;
+    height: 100px;
+    width: 100px;
     border: 5px solid #F2F0F6;
     transition: 0.5s;
+}
+
+#timer{
+    display: none;
+    color: #fff;
+    font-size: 2em;
+    line-height: 100px;
+    margin: 0px;
+    padding: 0px;
 }
 
 #recorder:hover, #recorder > div:hover{
     background-color: #ED3A3D;
     cursor: pointer;
+    -webkit-animation: none; /* Safari 4+ */
+    -moz-animation:    none; /* Fx 5+ */
+    -o-animation:      none; /* Opera 12+ */
+    animation: none;
     transition: 0.5s;
 }
 
+#recorder_div h4{
+    margin-top: 120px;
+    font-size: 1.2em;
+}
+
+#recorder_div h3{
+    display: none;
+}
+
 button{
-    width: 200px;
     background: none;
     cursor: pointer;
     font-size: 16px;
-    border: 1px solid #8A8787;
+    border: 1px solid #2345AA;
     margin: 0px;
-    padding: 20px 0px;
+    padding:10px 0px;
+}
+
+button:focus{
+    box-shadow: none;
+    outline: none;
 }
 
 button.blue{
@@ -56,5 +115,94 @@ button.blue{
 
 button.red{
     background-color: #FF4A5E;
+    border: 1px solid #FF4A5E;
     color: #fff;
+    width: 200px;
+    margin-top: 60px;
+    font-size: 20px;
+    padding: 15px 0px;
+    transition: 0.5s;
+}
+
+button.red:hover{
+    background-color: #ED3A3D;
+    transition: 0.5s;
+}
+
+button.red.disabled{
+    filter: grayscale(50%);
+}
+
+button.red.disabled:hover{
+    background-color: #FF4A5E;
+    transition: 0.5s;
+    cursor: default;
+}
+
+@-moz-keyframes spin {
+    from { -moz-transform: rotate(0deg); }
+    to { -moz-transform: rotate(360deg); }
+}
+@-webkit-keyframes spin {
+    from { -webkit-transform: rotate(0deg); }
+    to { -webkit-transform: rotate(360deg); }
+}
+@keyframes spin {
+    from {transform:rotate(0deg);}
+    to {transform:rotate(360deg);}
+}
+
+
+#loading{
+    display: none;
+    margin: 0 auto;
+    height: 100px;
+    width: 100px;
+    background-image: url('img/loader.svg');
+    background-repeat: no-repeat;
+    -webkit-animation: spin 3s infinite linear;
+}
+
+#confirm_booking{
+    display: none;
+}
+
+
+.float_container{
+    display: -webkit-flex;
+    display: flex;
+    justify-content: center;
+}
+
+.btn_container{
+    display: -webkit-flex;
+    display: flex;
+    justify-content: space-between;
+}
+.btn_container > button{
+    font-size: 14px;
+    padding: 3px 0px;
+    width: 45%;
+}
+
+.res_container{
+    width: 200px;
+    margin: 0px 15px;
+}
+
+.res_container > p{
+    margin: 10px 0px;
+    padding: 0px;
+    font-size: 1.5em;
+    line-height: 50px;
+    border: 1px solid #2345AA;
+}
+
+.res_container > p.blue{
+    background-color: #2345AA;
+    color: #fff;
+}
+
+#confirm_button{
+    clear: both;
 }
