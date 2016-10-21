@@ -7,7 +7,8 @@ import time
 
 def book_room(s):
     rooms = get_rooms(s)
-    
+
+
 
     book_room ={
         "op" : "boka",
@@ -60,7 +61,7 @@ def get_rooms(s):
         }
 
         booker = s.get('https://schema.mah.se/ajax/ajax_resursbokning.jsp', params = room_info,  headers=headers)
-        soup = BeautifulSoup(booker.content, 'lxml')
+        soup = BeautifulSoup(booker.content, "html.parser")
         mydivs = soup.findAll("td", { "class" : "grupprum-ledig" })
 
         for div in mydivs:
@@ -75,9 +76,10 @@ def get_rooms(s):
 
     return rooms
 
-
-
-
+def test_booking(inpat):
+    print inpat['date']
+    print inpat['time']
+    print inpat['location']
 
 
 
