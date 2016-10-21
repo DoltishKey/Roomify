@@ -10,8 +10,9 @@ import json
 import time
 from datetime import datetime, timedelta
 from modules import booker
+from modules import core
 
-#from modules import booker
+
 app = Flask(__name__)
 
 @app.route('/')
@@ -47,7 +48,7 @@ def handle_data():
 		if today.date() == time_update.date():
 			next_step = "Booker"
 			date = today.date()
-			time_now=int(str(date.strftime("%H")) + str(date.strftime("%M")))
+			time_now=int(str(today.strftime("%H")) + str(today.strftime("%M")))
 			if time_now > book_time['time_slot_end']:
 				date = date + timedelta(days=1)
 
@@ -78,12 +79,29 @@ def handle_data():
 @app.route('/grouprooms', methods=['POST'])
 def grouprooms():
 	in_data = request.form
-	time = in_data['time']
+	in_time = in_data['time']
 	location = in_data['location']
 	date = in_data['date']
+	con_date = datetime.strptime(date,'%Y-%m-%d')
+	today_date = datetime.now()
 
-	booker.test_booking(in_data)
-	return "key"
+	if con_date.date() == today_date.date():
+		res=booker.book_room('4',location)
+		if res['result'] == 'True':
+			core.add_new_booking(con_date.date(), int(in_time), location)
+			return 'OK'
+		else:
+			return 'No available room'
+
+	else:
+		core.add_new_booking(con_date.date(), int(in_time), location)
+		return 'OK'
+
+@app.route('/grouprooms', methods=['GET'])
+def get_grouprooms():
+	bookings=core.get_my_bookings()
+	return json.dumps(bookings)
+
 
 @app.route('/new_text_request', methods=['POST'])
 def send_text():

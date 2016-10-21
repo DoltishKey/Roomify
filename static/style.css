@@ -206,3 +206,7 @@ button.red.disabled:hover{
 #confirm_button{
     clear: both;
 }
+
+#booking_done{
+    display: none;
+}

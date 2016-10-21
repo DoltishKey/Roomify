@@ -4,26 +4,58 @@ import json
 from bs4 import BeautifulSoup
 import re
 import time
+import datetime
+import core
 
-def book_room(s):
+
+def book_room(int_val, location):
+    s = login()
     rooms = get_rooms(s)
+    try:
+        room = rooms[str(int_val)][0]
 
+    except IndexError:
+        return {'result':'False'}
 
+    if location == 'Niagara':
+        flik = "FLIK-0017"
+    else:
+        flik= "FLIK_0000"
+
+    date = time.strftime("%y-%m-%d")
 
     book_room ={
         "op" : "boka",
-        "datum" : '16-10-10',
-        "id": 'NI:A0301',
+        "datum" : date,
+        "id": room,
         "typ" : 'RESURSER_LOKALER',
-        "intervall": '4',
+        "intervall": int_val,
         "moment" : 'This room is Roomified',
-        "flik" : "FLIK-0017"
+        "flik" : flik
     }
-
     booker = s.get('https://schema.mah.se/ajax/ajax_resursbokning.jsp', params = book_room)
 
-    print booker.content
-    return
+
+    if booker.content == 'OK':
+        book_ids = myBookings(s,flik, date)
+        return {'result':'True', 'book_ids':book_ids}
+    else:
+        return  {'result':'False'}
+
+
+def myBookings(s,flik, date):
+    get_room ={
+        "datum" : date,
+        "flik" : flik
+    }
+    bookings = s.get('https://schema.mah.se/minaresursbokningar.jsp', params = get_room)
+    soup = BeautifulSoup(bookings.content, "html.parser")
+    parent = soup.find('div', id="minabokningar")
+    ids = []
+    for tag in parent.find_all(class_="ui-widget-content ui-corner-all"):
+         ids.append(tag.get('id'))
+
+    return ids
 
 
 
@@ -84,17 +116,13 @@ def test_booking(inpat):
 
 
 
-
-
-data = {
-    'username': raw_input('Username:'),
-    'password': raw_input('Password:')
-}
-
-head = {"User-Agent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36"}
-with requests.session() as s:
-    resp = s.get('https://schema.mah.se')
-    resp = s.post('https://schema.mah.se/login_do.jsp', data=data, headers=head)
-    #resp = s.get('https://schema.mah.se/resursbokning.jsp?flik=FLIK-0017')
-    #book_room(s)
-    get_rooms(s)
+def login():
+    data = {
+        'username': 'ac8240',
+        'password': '92F39gb2'
+    }
+    head = {"User-Agent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36"}
+    with requests.session() as s:
+        resp = s.get('https://schema.mah.se')
+        resp = s.post('https://schema.mah.se/login_do.jsp', data=data, headers=head)
+        return s

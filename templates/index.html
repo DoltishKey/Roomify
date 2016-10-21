@@ -27,8 +27,10 @@
                     <p id="timer">9</p>
                 </div>
             </div>
-            <div id="loading"></div>
+            <p class="list_bookings">List bookings</p>
         </div>
+
+        <div id="loading"></div>
 
         <div id="confirm_booking">
             <div class="float_container">
@@ -52,8 +54,12 @@
             <h4></h4>
             <p>You'll recive an email with the details the same day.</p>
             <button id="new_booking" class="red">New booking</button>
-            <button class="red">List bookings</button>
+            <button class="red" class="list_bookings">List bookings</button>
         </div>
+        <!--<div id="booking_list">
+            <h4>Upcoming bookings</h4>
+            <ul></ul>
+        </div>-->
         <!--<pre id="log"></pre>-->
         <script>
             function confirm_booking(){
@@ -62,19 +68,27 @@
                     $('#loading').show()
                     $('#state_heading').text('Wait for it...')
                     var value = $(this).text();
-                    var location = $('#location').find('p').text();
-                    var time = $('#time').find('p').text();
+                    var location = $('#location').find('p').attr('data-location');
+                    var time = $('#time').find('p').attr('data-time');
                     var date = $('#date').find('p').text();
                     $.ajax({
                         url: '/grouprooms',
                         method: 'POST',
-                        data:{'sound':encodedData},
-                        dataType: "json",
+                        data:{
+                            'location':location,
+                            'time':time,
+                            'date':date
+                        },
+                        dataType: "text",
                         success: function(response) {
                             $('#loading').hide()
-                            $('booking_done').show()
-                            //Här ska in en if sats för att kolla att allt gick bra!
-                            $('#state_heading').text("Great, we're done!")
+                            $('#booking_done').show()
+                            if (response == 'OK'){
+                                $('#state_heading').text("Great, we're done!")
+                            }
+                            else{
+                                $('#state_heading').text("Sorry, no room available")
+                            }
                         }
                     });
                 });
@@ -82,10 +96,25 @@
 
             function new_booking(){
                 $('#new_booking, #cancel').click(function(){
-                    $('booking_done').hide()
-                    $('confirm_booking').hide()
-                    $('recorder_div').show()
+                    $('#booking_done').hide()
+                    $('#confirm_booking').hide()
+                    $('#recorder_div').show()
+                    $('#recorder_div').find('h4').text('Tap to capture booking.')
                     $('#state_heading').text('')
+                });
+            }
+
+            function list_bookings(){
+                $('.list_bookings').click(function(){
+                    $.ajax({
+                        url: '/grouprooms',
+                        method: 'GET',
+                        dataType: "json",
+                        success: function(response) {
+                            console.log(response)
+                                //$('#booking_list').find(ul)
+                        }
+                    });
                 });
             }
 
@@ -96,6 +125,7 @@
             $(document).ready(function() {
                 send_data()
                 startStopRecording()
+                list_bookings()
             });
 
             function startStopRecording(){
@@ -104,9 +134,10 @@
                     if(recording == false){
                         recording = true
                         recorder && recorder.record();
-                        $('#timer').show()
                         $('#recorder_div').find('h4').text('Recording, tap to stop.')
                         var count=9;
+                        $('#timer').show()
+                        $('#timer').text(count)
                         var counter=setInterval(timer, 1000);
                         function timer(){
                             count=count-1;
@@ -115,6 +146,7 @@
                                 if(recording == true){
                                     recording = false
                                     recorder && recorder.stop();
+                                    $('#timer').hide()
                                     createDownloadLink();
                                 }
                                 return;
@@ -125,6 +157,7 @@
                     else{
                         recording = false
                         recorder && recorder.stop();
+                        $('#timer').hide()
                         createDownloadLink();
                     }
                 });
@@ -176,9 +209,8 @@
             }
 
             function createDownloadLink() {
-                $('#recorder').hide()
+                $('#recorder_div').hide()
                 $('#loading').show()
-                $('#recorder_div').find('h4').hide()
                 $('#state_heading').text('Wait for it...')
                 recorder && recorder.exportWAV(function(blob) {
                     var reader = new FileReader();
@@ -196,17 +228,19 @@
                                 $('#loading').hide()
                                 $('#confirm_booking').show()
                                 $('#state_heading').text('We will book a room for you')
+                                $('.btn_container').empty()
                                 // Location, date och time skrivs ut + tillhörande knapper
                                 if(response[0]['errors'].indexOf('location') > -1){
                                     $('#location').find('p').text('where?')
-                                    $('#location').find('.btn_container').append("<button class='location'>Niagara</button>")
-                                    $('#location').find('.btn_container').append("<button class='location'>Orkanen</button>")
+                                    $('#location').find('.btn_container').append("<button class='location' data-location='Niagara'>Niagara</button>")
+                                    $('#location').find('.btn_container').append("<button class='location' data-location='Orkanen'>Orkanen</button>")
                                     $('#confirm_button').addClass('disabled')
                                     $('#confirm_button').prop('disabled', true);
                                 }
                                 else{
-                                    $('#location').find('p').text(response[1]['location'])
+                                    $('#location').find('p').text('in ' + response[1]['location'])
                                     $('#location').find('p').addClass('blue')
+                                    $('#location').find('p').attr('data-location',response[1]['location'])
                                 }
 
                                 $('#date').find('p').text(response[1]['date'])
@@ -218,12 +252,13 @@
                                     '17:15-20:00']
                                 var prime = timeslots[response[1]['primary_slot']]
                                 $('#time').find('p').text(prime)
+                                $('#time').find('p').attr('data-time', response[1]['primary_slot'])
 
                                 if(response[1]['sec_slot'] != null){
                                     var secondary = timeslots[response[1]['sec_slot']]
                                     btns = [
-                                        "<button class='time blue'>"+ prime +"</button>",
-                                        "<button class='time'>"+ secondary +"</button>"
+                                        "<button class='time blue' data-time="+ response[1]['primary_slot'] + " >"+ prime +"</button>",
+                                        "<button class='time' data-time="+ response[1]['sec_slot'] + " >"+ secondary +"</button>"
                                     ]
                                     if (response[1]['sec_slot'] < response[1]['primary_slot']){
                                         btns.reverse()
@@ -238,10 +273,15 @@
                                     $('#location').find('p').addClass('blue')
                                     $('#confirm_button').removeClass('disabled')
                                     $('#confirm_button').prop('disabled', false);
+                                    var attri = $(this).attr('data-location')
+                                    $('#location').find('p').attr('data-location', attri);
                                 });
                                 $('.time').click(function(){
                                     var value = $(this).text();
+                                    var attri = $(this).attr('data-time')
                                     $('#time').find('p').text(value);
+                                    $('#time').find('p').attr('data-time', attri);
+
                                 });
 
                                 $('.btn_container > button').click(function(){
@@ -253,6 +293,7 @@
 
 
                                 confirm_booking()
+                                new_booking()
                             }
                         });
                     }
