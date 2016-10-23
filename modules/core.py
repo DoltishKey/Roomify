@@ -31,10 +31,15 @@ def add_new_booking(date, int_val, location):
     return last_id
 
 def get_my_bookings():
-    cursor = call_database()
-    global db
-    sql="SELECT * FROM bookings WHERE DATE(date_booking) > CURDATE()"
-    cursor.execute(sql)
-    mighty_db_says = cursor.fetchall()
-    hang_up_on_database()
-    return mighty_db_says
+	cursor = call_database()
+	global db
+	sql="SELECT * FROM bookings WHERE DATE(date_booking) > CURDATE()"
+	cursor.execute(sql)
+	mighty_db_says = cursor.fetchall()
+	hang_up_on_database()
+	mighty_db_says = list(mighty_db_says)
+	for idx, item in enumerate(mighty_db_says):
+		mighty_db_says[idx] = list(item)
+		mighty_db_says[idx][1] = item[1].strftime('%Y-%m-%d')
+
+	return mighty_db_says

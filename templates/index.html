@@ -56,10 +56,10 @@
             <button id="new_booking" class="red">New booking</button>
             <button class="red" class="list_bookings">List bookings</button>
         </div>
-        <!--<div id="booking_list">
-            <h4>Upcoming bookings</h4>
+        <div id="booking_list">
+            <h3>Upcoming bookings</h3>
             <ul></ul>
-        </div>-->
+        </div>
         <!--<pre id="log"></pre>-->
         <script>
             function confirm_booking(){
@@ -106,26 +106,56 @@
 
             function list_bookings(){
                 $('.list_bookings').click(function(){
+                    $('#booking_list').show()
+
+                    //Här ska dagens boknignar in
+
+
+                    //Kommande bokningar
                     $.ajax({
                         url: '/grouprooms',
                         method: 'GET',
                         dataType: "json",
                         success: function(response) {
-                            console.log(response)
-                                //$('#booking_list').find(ul)
+                            list = $('#booking_list').find('ul');
+                            var timeslots =
+                                ['08:15-10:00',
+                                '10:15-13:00',
+                                '13:15-15:00',
+                                '15:15-17:00',
+                                '17:15-20:00']
+                            for (i = 0; i < response.length; i++) {
+                                list.append("<li data-id="+response[i][0]+"><p>"+response[i][1] +" | "+ timeslots[response[i][2]]+ " | " +response[i][3]+"<span class='delete_icon'></span></p></li>")
+                            }
+                            removeBooking();
                         }
                     });
                 });
             }
 
+            function removeBooking(){
+                $('.delete_icon').click(function(){
+                    to_delte = $(this).parents('li')
+                    var del_attr = to_delte.attr('data-id');
+                    $.ajax({
+                        url: '/grouprooms',
+                        method: 'DELETE',
+                        data:{'id':del_attr},
+                        dataType: "text",
+                        success: function(response) {
+                            to_delte.remove()
+                        }
+                    });
+                });
+            }
 
         </script>
 
         <script>
             $(document).ready(function() {
                 send_data()
-                startStopRecording()
-                list_bookings()
+                startStopRecording();
+                list_bookings();
             });
 
             function startStopRecording(){

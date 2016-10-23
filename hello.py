@@ -102,6 +102,10 @@ def get_grouprooms():
 	bookings=core.get_my_bookings()
 	return json.dumps(bookings)
 
+@app.route('/grouprooms', methods=['DELETE'])
+def delete_grouprooms():
+	return 'OK'
+
 
 @app.route('/new_text_request', methods=['POST'])
 def send_text():

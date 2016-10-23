@@ -207,6 +207,39 @@ button.red.disabled:hover{
     clear: both;
 }
 
+#booking_list{
+    display: none;
+}
+
 #booking_done{
     display: none;
+}
+
+#booking_list > ul{
+    width: 60%;
+    margin: 0 auto;
+}
+
+#booking_list > ul > li{
+    text-align: left;
+    list-style-type: none;
+    border-bottom: 1px solid #8A8787;
+}
+
+#booking_list > ul > li >p{
+    font-size: 1.4em;
+}
+
+.delete_icon{
+    width: 30px;
+    height: 30px;
+    float: right;
+    background-image: url('img/delete.svg');
+    background-repeat: no-repeat;
+    background-size: 25px;
+    background-position: center center;;
+}
+
+.delete_icon:hover{
+    cursor: pointer;
 }
