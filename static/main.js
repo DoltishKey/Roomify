@@ -71,7 +71,7 @@ function startStopRecording(){
                         recording = false
                         recorder && recorder.stop();
                         $('#timer').hide()
-                        createDownloadLink();
+                        audioStream();
                     }
                     return;
                 }
@@ -82,14 +82,14 @@ function startStopRecording(){
             recording = false
             recorder && recorder.stop();
             $('#timer').hide()
-            createDownloadLink();
+            audioStream();
         }
     });
 }
 
 
 //Converts audio and send it to server. And handles return.
-function createDownloadLink() {
+function audioStream() {
     $('main').html(objects('loading'))
     recorder && recorder.exportWAV(function(blob) {
         var reader = new FileReader();

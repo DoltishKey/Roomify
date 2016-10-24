@@ -90,6 +90,14 @@ h3{
     font-size: 1.2em;
 }
 
+#recorder_div > p{
+    margin-top: 140px;
+}
+
+#recorder_div > p:hover{
+    cursor: pointer;
+}
+
 button{
     background: none;
     cursor: pointer;

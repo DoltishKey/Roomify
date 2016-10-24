@@ -99,23 +99,18 @@ def get_rooms(s):
         '3':[],
         '4':[]
     }
-
     houses =['FLIK-0017', 'FLIK_0000']
-
     date = (time.strftime("%y-%m-%d"))
-
     for house in houses:
         room_info = {
             "op" : "hamtaBokningar",
             "datum" : date,
             "flik" : house
         }
-
         headers = {
             'async': 'False',
             'content-type': 'application/json'
         }
-
         booker = s.get('https://schema.mah.se/ajax/ajax_resursbokning.jsp', params = room_info,  headers=headers)
         soup = BeautifulSoup(booker.content, "html.parser")
         mydivs = soup.findAll("td", { "class" : "grupprum-ledig" })
@@ -127,7 +122,6 @@ def get_rooms(s):
                 sdata = t[t.find("(")+1:t.find(")")]
                 new_data = sdata.split(',')
                 x = [n.strip("'") for n in new_data]
-
                 rooms[x[2]].append(x[0])
 
     return rooms
@@ -136,8 +130,6 @@ def test_booking(inpat):
     print inpat['date']
     print inpat['time']
     print inpat['location']
-
-
 
 
 def login():
@@ -150,5 +142,3 @@ def login():
         resp = s.get('https://schema.mah.se')
         resp = s.post('https://schema.mah.se/login_do.jsp', data=data, headers=head)
         return s
-
-myBookings()

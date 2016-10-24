@@ -1,8 +1,7 @@
 
-
+//Konfigureringsfil som innehåller HTML-komponenter för återanvändning.
 function objects(item){
     var modules ={
-
         'recorder_div':
             '<div id="recorder_div">\
                 <h4>Tap to capture booking</h4>\
@@ -56,17 +55,16 @@ function objects(item){
 
         'text_container':
             '<div id="text_container">\
-                <form action="" method="post" id="new_text_request">\
-                    <label for="new_name">Vad vill du göra?</label>\
-                    <input type="text" name="text_request"  id="text_request">\
-                    <input type="submit">\
-                </form>\
+                <h3 id="state_heading">Sorry!</h3>\
+                <p>You need to use a modern version of Chrome to use Roomify.</p>\
+                <p>You can find it <a href="https://www.google.com/chrome/browser/desktop/index.html">here.</a></p>\
             </div>'
     }
     return modules[item]
 }
 
 
+//Lista med alla tidsluckor som resten av front-end koden parat med. 
 var timeslots =
     ['08:15-10:00',
     '10:15-13:00',
