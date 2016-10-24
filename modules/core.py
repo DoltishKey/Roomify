@@ -33,7 +33,7 @@ def add_new_booking(date, int_val, location):
 def get_my_bookings():
 	cursor = call_database()
 	global db
-	sql="SELECT * FROM bookings WHERE DATE(date_booking) > CURDATE()"
+	sql="SELECT * FROM bookings WHERE DATE(date_booking) > CURDATE() ORDER BY date_booking, time_slot"
 	cursor.execute(sql)
 	mighty_db_says = cursor.fetchall()
 	hang_up_on_database()

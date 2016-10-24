@@ -37,27 +37,51 @@ def book_room(int_val, location):
 
 
     if booker.content == 'OK':
-        book_ids = myBookings(s,flik, date)
         return {'result':'True', 'book_ids':book_ids}
     else:
         return  {'result':'False'}
 
 
-def myBookings(s,flik, date):
-    get_room ={
-        "datum" : date,
-        "flik" : flik
+def myBookings():
+    s = login()
+    date = time.strftime("%y-%m-%d")
+    fliks = ["FLIK-0017", "FLIK_0000"]
+    book_info = []
+
+    for flik in fliks:
+        get_room ={
+            "datum" : date,
+            "flik" : flik
+        }
+        bookings = s.get('https://schema.mah.se/minaresursbokningar.jsp', params = get_room)
+        soup = BeautifulSoup(bookings.content, "html.parser")
+        parent = soup.find('div', id="minabokningar")
+        for tag in parent.find_all(class_="ui-widget-content ui-corner-all"):
+            room = {}
+            booking_id_list = tag.get('id').split('_', 1)
+            room['book_id'] = booking_id_list[1]
+
+
+            data = tag.find('div').text.split(' ')
+            room['start'] = data[1]
+
+            room['room'] = tag.find('b').text.split(',')[1]
+            book_info.append(room)
+
+    book_info = sorted(book_info, key=lambda k: k['start'])
+
+    return book_info
+
+def removeBooking(id):
+    s = login()
+    delte_room ={
+        "op" : 'avboka',
+        "bokningsId" : id
     }
-    bookings = s.get('https://schema.mah.se/minaresursbokningar.jsp', params = get_room)
-    soup = BeautifulSoup(bookings.content, "html.parser")
-    parent = soup.find('div', id="minabokningar")
-    ids = []
-    for tag in parent.find_all(class_="ui-widget-content ui-corner-all"):
-         ids.append(tag.get('id'))
+    bookings = s.get('https://schema.mah.se/ajax/ajax_resursbokning.jsp', params = delte_room)
+    print bookings.content
 
-    return ids
-
-
+    return
 
 def get_rooms(s):
 
@@ -126,3 +150,5 @@ def login():
         resp = s.get('https://schema.mah.se')
         resp = s.post('https://schema.mah.se/login_do.jsp', data=data, headers=head)
         return s
+
+myBookings()

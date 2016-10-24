@@ -90,10 +90,6 @@ h3{
     font-size: 1.2em;
 }
 
-#recorder_div h3{
-    display: none;
-}
-
 button{
     background: none;
     cursor: pointer;
@@ -154,7 +150,6 @@ button.red.disabled:hover{
 
 
 #loading{
-    display: none;
     margin: 0 auto;
     height: 100px;
     width: 100px;
@@ -163,10 +158,11 @@ button.red.disabled:hover{
     -webkit-animation: spin 3s infinite linear;
 }
 
-#confirm_booking{
-    display: none;
+.removing_loader{
+    background-image: url('img/loader.svg');
+    background-repeat: no-repeat;
+    -webkit-animation: spin 3s infinite linear;
 }
-
 
 .float_container{
     display: -webkit-flex;
@@ -207,13 +203,7 @@ button.red.disabled:hover{
     clear: both;
 }
 
-#booking_list{
-    display: none;
-}
 
-#booking_done{
-    display: none;
-}
 
 #booking_list > ul{
     width: 60%;

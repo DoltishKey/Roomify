@@ -102,8 +102,20 @@ def get_grouprooms():
 	bookings=core.get_my_bookings()
 	return json.dumps(bookings)
 
+@app.route('/room_today', methods=['GET'])
+def get_room_today():
+	bookings=booker.myBookings()
+	return json.dumps(bookings)
+
 @app.route('/grouprooms', methods=['DELETE'])
 def delete_grouprooms():
+	return 'OK'
+
+@app.route('/room_today', methods=['DELETE'])
+def delete_room_today():
+	in_data = request.form
+	book_id = in_data['id']
+	booker.removeBooking(book_id)
 	return 'OK'
 
 

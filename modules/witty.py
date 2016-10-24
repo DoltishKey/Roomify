@@ -72,11 +72,11 @@ def time_master(req_time):
         for idx, val in enumerate(time_slots):
             if int_time >= val[0] and int_time <= val[1]:
                 prime_slot = idx
-                if val[1] - int_time <= 50:
+                if val[1] - int_time <= 50 and idx !=4:
                     prime_slot = idx+1
                     sec_slot = idx
                     break
-                elif val[1] - int_time <= 100:
+                elif val[1] - int_time <= 100 and idx !=4:
                     sec_slot = idx+1
                     break
 
