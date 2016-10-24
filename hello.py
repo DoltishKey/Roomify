@@ -12,16 +12,27 @@ from datetime import datetime, timedelta
 from modules import booker
 from modules import core
 
+''' Hello.py är servern vars roomify körs'''
 
 app = Flask(__name__)
 
 @app.route('/')
 def welcome():
+	# På URL '/' renderas en html-fil som "startsida" för roomify
 	return render_template('index.html')
 
 
 @app.route('/new_speech_request', methods=['POST'])
 def handle_data():
+	# Läser in ljudfil, konverteras till b64-format
+	# Skickar datan till wit.ai som tolkar ljudfilen och returnerar den data som kunde utläsas
+	# Returnerar en lista av fel ifall sådanna uppkom.
+	# Hanterar formateringen av datum/tid baserat på data som genererats av wit.ai
+	# Om dagens datum ---> boka grupprum direkt.
+	# Om annat än dagens datum ---> lägg in bokning i databas
+	# Genererades ingen datum/tid från wit.ai: utgå från dagens datum och nuvarande tid
+	# Lägg till datum/tid för bokning i listan för bokningar
+	# Returnera data till front-end
 	in_data = request.form
 
 	file_in = base64.b64decode(in_data['sound'])
@@ -80,6 +91,7 @@ def handle_data():
 
 @app.route('/grouprooms', methods=['POST'])
 def grouprooms():
+	#Utför grupprumsbokning
 	in_data = request.form
 	in_time = in_data['time']
 	location = in_data['location']
@@ -101,16 +113,19 @@ def grouprooms():
 
 @app.route('/grouprooms', methods=['GET'])
 def get_grouprooms():
+	#hämta mina bokningar som är sparade i databasen
 	bookings=core.get_my_bookings()
 	return json.dumps(bookings)
 
 @app.route('/room_today', methods=['GET'])
 def get_room_today():
+	#hämta mina bokningar som är genomförda i kronox
 	bookings=booker.myBookings()
 	return json.dumps(bookings)
 
 @app.route('/grouprooms', methods=['DELETE'])
 def delete_grouprooms():
+	#Avboka bokade grupprum i databasen
 	in_data = request.form
 	id_remove=in_data['id']
 	core.removeBooking(id_remove)
@@ -118,6 +133,7 @@ def delete_grouprooms():
 
 @app.route('/room_today', methods=['DELETE'])
 def delete_room_today():
+	#Avboka bokade grupprum som bokats på Kronox
 	in_data = request.form
 	book_id = in_data['id']
 	booker.removeBooking(book_id)
@@ -126,6 +142,8 @@ def delete_room_today():
 
 @app.route('/new_text_request', methods=['POST'])
 def send_text():
+	#Om mic ej fungerar - så kan användaren lägga in en bokning i form av text_request
+	#Under construction
 	in_data = request.form
 	to_do = in_data['text_request']
 	print to_do

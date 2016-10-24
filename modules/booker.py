@@ -6,9 +6,12 @@ import re
 import time
 import datetime
 import core
+''' Booker.py är den modul som formaterar data för att lyckas utföra en bokning, hämta bokning samt ta bort bokning'''
 
 
 def book_room(int_val, location):
+    #Boka ett grupprum på Kronox
+    #Skickar in i vilket hus och datum/tid som bokningen ska göras
     s = login()
     rooms = get_rooms(s)
     try:
@@ -43,6 +46,7 @@ def book_room(int_val, location):
 
 
 def myBookings():
+    #Hämta och sortera alla mina egna bokningar
     s = login()
     date = time.strftime("%y-%m-%d")
     fliks = ["FLIK-0017", "FLIK_0000"]
@@ -73,6 +77,7 @@ def myBookings():
     return book_info
 
 def removeBooking(id):
+    #Avboka ett grupprum, baserat på bokningsId
     s = login()
     delte_room ={
         "op" : 'avboka',
@@ -84,7 +89,7 @@ def removeBooking(id):
     return
 
 def get_rooms(s):
-
+    #Hämta alla lediga rum för de specifika husen (niagara och orkanen) och tider
 
     #0:'08:15-10:00'
     #1:'10:15-13:00'
@@ -132,15 +137,9 @@ def get_rooms(s):
 
     return rooms
 
-def test_booking(inpat):
-    print inpat['date']
-    print inpat['time']
-    print inpat['location']
-
-
-
 
 def login():
+    #logga in med personliga inloggningsuppgifter för att få tillgång till kronox
     data = {
         'username': 'ac8240',
         'password': '92F39gb2'

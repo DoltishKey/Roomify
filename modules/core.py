@@ -8,6 +8,7 @@ db = None
 cursor = None
 
 def call_database():
+	#Skapar en uppkoppling till databas
 	global db
 	global cursor
 	db = MySQLdb.connect(host="127.0.0.1", port=8889, user="root", passwd="root", db="roomify")
@@ -15,11 +16,13 @@ def call_database():
 	return cursor
 
 def hang_up_on_database():
+	#Stänger ner uppkopplingen till databas
 	global db
 	db = db.close()
 
 
 def add_new_booking(date, int_val, location):
+	#Lägg in ny bokning i databas
     cursor = call_database()
     global db
     sql = "INSERT INTO bookings(date_booking, time_slot, location)\
@@ -31,6 +34,7 @@ def add_new_booking(date, int_val, location):
     return last_id
 
 def get_my_bookings():
+	#Hämta alla mina bokningar i databas
 	cursor = call_database()
 	global db
 	sql="SELECT * FROM bookings WHERE DATE(date_booking) > CURDATE() ORDER BY date_booking, time_slot"
@@ -46,6 +50,7 @@ def get_my_bookings():
 
 
 def removeBooking(id_remove):
+	#Avboka en inlagd bokning i databasen
 	id_remove = int(id_remove)
 	print type(id_remove)
 	cursor = call_database()
