@@ -49,8 +49,10 @@ def handle_data():
 			next_step = "Booker"
 			date = today.date()
 			time_now=int(str(today.strftime("%H")) + str(today.strftime("%M")))
-			if time_now > book_time['time_slot_end']:
+			if time_now > book_time['time_slot_end'] and book_time['prime_slot'] == 4:
 				date = date + timedelta(days=1)
+			elif time_now > book_time['time_slot_end'] and book_time['prime_slot'] != 4:
+				book_time = witty.time_master(today)
 
 		else:
 			date = req_time.date()
@@ -86,7 +88,7 @@ def grouprooms():
 	today_date = datetime.now()
 
 	if con_date.date() == today_date.date():
-		res=booker.book_room('4',location)
+		res=booker.book_room(in_time,location)
 		if res['result'] == 'True':
 			core.add_new_booking(con_date.date(), int(in_time), location)
 			return 'OK'
@@ -109,6 +111,9 @@ def get_room_today():
 
 @app.route('/grouprooms', methods=['DELETE'])
 def delete_grouprooms():
+	in_data = request.form
+	id_remove=in_data['id']
+	core.removeBooking(id_remove)
 	return 'OK'
 
 @app.route('/room_today', methods=['DELETE'])

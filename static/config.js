@@ -44,13 +44,14 @@ function objects(item){
                 <h4></h4>\
                 <p>You'll recive an email with the details the same day.</p>\
                 <button id='new_booking' class='red'>New booking</button>\
-                <button class='red' class='list_bookings'>List bookings</button>\
+                <button class='red list_bookings'>List bookings</button>\
             </div>",
 
         'booking_list':
             "<div id='booking_list'>\
                 <h3>Upcoming bookings</h3>\
                 <ul></ul>\
+                <button id='new_booking' class='red'>New booking</button>\
             </div>",
 
         'text_container':

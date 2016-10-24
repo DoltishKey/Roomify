@@ -158,11 +158,6 @@ button.red.disabled:hover{
     -webkit-animation: spin 3s infinite linear;
 }
 
-.removing_loader{
-    background-image: url('img/loader.svg');
-    background-repeat: no-repeat;
-    -webkit-animation: spin 3s infinite linear;
-}
 
 .float_container{
     display: -webkit-flex;
@@ -232,4 +227,10 @@ button.red.disabled:hover{
 
 .delete_icon:hover{
     cursor: pointer;
+}
+
+.removing_loader{
+    background-image: url('img/loader.svg');
+    background-repeat: no-repeat;
+    -webkit-animation: spin 2s infinite linear;
 }

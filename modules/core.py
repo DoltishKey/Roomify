@@ -43,3 +43,15 @@ def get_my_bookings():
 		mighty_db_says[idx][1] = item[1].strftime('%Y-%m-%d')
 
 	return mighty_db_says
+
+
+def removeBooking(id_remove):
+	id_remove = int(id_remove)
+	print type(id_remove)
+	cursor = call_database()
+	global db
+	sql = "DELETE FROM bookings WHERE id = %s"
+	cursor.execute(sql, (id_remove,))
+	db.commit()
+	hang_up_on_database()
+	return

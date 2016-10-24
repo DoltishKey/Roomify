@@ -37,7 +37,7 @@ def book_room(int_val, location):
 
 
     if booker.content == 'OK':
-        return {'result':'True', 'book_ids':book_ids}
+        return {'result':'True'}
     else:
         return  {'result':'False'}
 

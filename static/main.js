@@ -213,6 +213,7 @@ function confirm_booking(){
                     $('#state_heading').text("Sorry, no room available")
                 }
                 new_booking();
+                list_bookings();
 
             }
         });
@@ -250,6 +251,7 @@ function list_bookings(){
                             list.append("<li data-id="+response[i][0]+"><p>"+response[i][1] +" | "+ timeslot(response[i][2])+ " | " +response[i][3]+"<span class='delete_icon delte_db'></span></p></li>")
                         }
                         removeBooking();
+                        new_booking();
                     }
                 });
             }

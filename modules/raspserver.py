@@ -2,7 +2,9 @@
 import MySQLdb
 import booker
 from datetime import datetime
-from threading import Timer
+import schedule
+import time
+
 
 
 db = None
@@ -33,10 +35,8 @@ def do_booking():
     for item in batch:
         booker.book_room(item[0],item[1])
 
-x=datetime.today()
-y=x.replace(day=x.day+1, hour=0, minute=0, second=0, microsecond=0)
-delta_t=y-x
-secs=delta_t.seconds+1
+schedule.every().day.at("00:00").do(do_booking)
 
-t = Timer(secs, do_booking)
-t.start()
+while 1:
+    schedule.run_pending()
+    time.sleep(1)
