@@ -4,7 +4,7 @@ function objects(item){
     var modules ={
         'recorder_div':
             '<div id="recorder_div">\
-                <h4>Tap to capture booking</h4>\
+                <h3 id="state_heading">Tap to capture booking</h3>\
                 <div id="recorder">\
                     <div>\
                         <p id="timer">9</p>\
@@ -64,7 +64,7 @@ function objects(item){
 }
 
 
-//Lista med alla tidsluckor som resten av front-end koden parat med. 
+//Lista med alla tidsluckor som resten av front-end koden parat med.
 var timeslots =
     ['08:15-10:00',
     '10:15-13:00',

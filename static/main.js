@@ -58,7 +58,7 @@ function startStopRecording(){
         if(recording == false){
             recording = true
             recorder && recorder.record();
-            $('#recorder_div').find('h4').text('Recording, tap to stop.')
+            $('#recorder_div').find('h3').text('Recording, tap to stop.')
             var count=9;
             $('#timer').show()
             $('#timer').text(count)
@@ -213,8 +213,6 @@ function confirm_booking(){
                     $('#state_heading').text("Sorry, no room available")
                 }
                 new_booking();
-                list_bookings();
-
             }
         });
     });
@@ -229,24 +227,24 @@ function list_bookings(){
 
         //Här ska dagens boknignar in
         $.ajax({
-            url: '/room_today',
+            url: '/bookedrooms',
             method: 'GET',
             dataType: "json",
-            success: function(response) {
-                $('main').html(objects('booking_list'))
-                list = $('#booking_list').find('ul');
-                for (i = 0; i < response.length; i++) {
-                    book_id = response[i]['book_id']
-                    room = response[i]['room']
-                    tims = timeslot_match(response[i]['start'])
-                    list.append("<li data-book-id="+ book_id +"><p>Today | "+ tims + " | " + room + "<span class='delete_icon delte_kroon'></span></p></li>")
-                }
+            success: function(todayResp) {
                 $.ajax({
                     url: '/grouprooms',
                     method: 'GET',
                     dataType: "json",
                     success: function(response) {
+                        $('main').html(objects('booking_list'))
                         list = $('#booking_list').find('ul');
+                        for (i = 0; i < todayResp.length; i++) {
+                            book_id = todayResp[i]['book_id']
+                            room = todayResp[i]['room']
+                            tims = timeslot_match(todayResp[i]['start'])
+                            list.append("<li data-book-id="+ book_id +"><p>Today | "+ tims + " | " + room + "<span class='delete_icon delte_kroon'></span></p></li>")
+                        }
+
                         for (i = 0; i < response.length; i++) {
                             list.append("<li data-id="+response[i][0]+"><p>"+response[i][1] +" | "+ timeslot(response[i][2])+ " | " +response[i][3]+"<span class='delete_icon delte_db'></span></p></li>")
                         }
@@ -267,19 +265,16 @@ function removeBooking(){
         to_delte = $(this).parents('li')
         if ($(this).hasClass('delte_kroon')){
             var del_attr = to_delte.attr('data-book-id');
-            url = '/room_today'
-            data = {"id":del_attr}
+            url = '/bookedrooms/'+del_attr
         }
         else{
             var del_attr = to_delte.attr('data-id');
-            url = '/grouprooms'
-            data = {'id':del_attr}
+            url = '/grouprooms/'+ del_attr
         }
 
         $.ajax({
             url: url,
             method: 'DELETE',
-            data:data,
             dataType: "text",
             success: function(response) {
                 to_delte.remove()
@@ -291,6 +286,6 @@ function removeBooking(){
 function new_booking(){
     $('#new_booking, #cancel').click(function(){
         $('main').html(objects('recorder_div'))
-        $('#recorder_div').find('h4').text('Tap to capture booking.')
+        $('#recorder_div').find('h3').text('Tap to capture booking.')
     });
 }

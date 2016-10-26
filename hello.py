@@ -60,10 +60,10 @@ def handle_data():
 			next_step = "Booker"
 			date = today.date()
 			time_now=int(str(today.strftime("%H")) + str(today.strftime("%M")))
-			if time_now > book_time['time_slot_end'] and book_time['prime_slot'] == 4:
+			if time_now > book_time['time_slot_end']:
 				date = date + timedelta(days=1)
-			elif time_now > book_time['time_slot_end'] and book_time['prime_slot'] != 4:
-				book_time = witty.time_master(today)
+			#elif time_now > book_time['time_slot_end'] and book_time['prime_slot'] != 4:
+				#book_time = witty.time_master(today)
 
 		else:
 			date = req_time.date()
@@ -81,17 +81,17 @@ def handle_data():
 	}
 	return_response.append(time_respone)
 
-
 	if 'location' in response['errors']:
 		location = False
 	else:
-		return_response[1]['location'] = response['data']['entities']['location'][0]['value']
+		return_response[1]['location'] = (response['data']['entities']['location'][0]['value']).title()
 
 	return json.dumps(return_response)
 
 @app.route('/grouprooms', methods=['POST'])
 def grouprooms():
 	#Utför grupprumsbokning
+	print 'Körs'
 	in_data = request.form
 	in_time = in_data['time']
 	location = in_data['location']
@@ -102,7 +102,6 @@ def grouprooms():
 	if con_date.date() == today_date.date():
 		res=booker.book_room(in_time,location)
 		if res['result'] == 'True':
-			core.add_new_booking(con_date.date(), int(in_time), location)
 			return 'OK'
 		else:
 			return 'No available room'
@@ -117,25 +116,21 @@ def get_grouprooms():
 	bookings=core.get_my_bookings()
 	return json.dumps(bookings)
 
-@app.route('/room_today', methods=['GET'])
+@app.route('/grouprooms/<book_id>', methods=['DELETE'])
+def delete_grouprooms(book_id):
+	#Avboka bokade grupprum i databasen
+	core.removeBooking(book_id)
+	return 'OK'
+
+@app.route('/bookedrooms', methods=['GET'])
 def get_room_today():
 	#hämta mina bokningar som är genomförda i kronox
 	bookings=booker.myBookings()
 	return json.dumps(bookings)
 
-@app.route('/grouprooms', methods=['DELETE'])
-def delete_grouprooms():
-	#Avboka bokade grupprum i databasen
-	in_data = request.form
-	id_remove=in_data['id']
-	core.removeBooking(id_remove)
-	return 'OK'
-
-@app.route('/room_today', methods=['DELETE'])
-def delete_room_today():
+@app.route('/bookedrooms/<book_id>', methods=['DELETE'])
+def delete_room_today(book_id):
 	#Avboka bokade grupprum som bokats på Kronox
-	in_data = request.form
-	book_id = in_data['id']
 	booker.removeBooking(book_id)
 	return 'OK'
 

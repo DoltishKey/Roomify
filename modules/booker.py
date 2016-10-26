@@ -1,3 +1,4 @@
+# *-* coding: utf-8 *-*
 
 import requests
 import json
@@ -16,7 +17,6 @@ def book_room(int_val, location):
     rooms = get_rooms(s)
     try:
         room = rooms[str(int_val)][0]
-
     except IndexError:
         return {'result':'False'}
 

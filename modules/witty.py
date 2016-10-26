@@ -46,7 +46,7 @@ def content_parser(data):
 
     try:
         location = data['entities']['location'][0]['value'].lower()
-        if location != 'niagara' or location != 'orkanen':
+        if location != 'niagara' and location != 'orkanen':
             error_list.append('location')
     except KeyError:
         error_list.append('location')
@@ -61,7 +61,7 @@ def time_master(req_time):
         1. Konverterar efterfrågad tid till int.
         2. Kontrollerar vilket tidsspan efterfrågard tid ligger innom.
         3. Avgör vilket den mest passande tidsluckan är och ger en alternativ tid där det behövs.
-        4. Returnerar index för primära och sekundera tidsluckan samt sluttid för primrär lucka (används för senare kontroll). 
+        4. Returnerar index för primära och sekundera tidsluckan samt sluttid för primrär lucka (används för senare kontroll).
     '''
     time = req_time.time()
     int_time = int(str(time.strftime("%H")) + str(time.strftime("%M")))
